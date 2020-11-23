@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from "react";
 import styled from "styled-components";
+import {Route, Switch} from "react-router-dom";
+import Login from "../login/Login";
 
 
 const StyledContainer = styled.div`
@@ -56,7 +58,22 @@ const StyledButton = styled.div`
 `;
 
 const StyledSignUp = styled(StyledButton)`
-    background-color: #FFD343; 
+    background-color: #FFD343;
+    &:hover{
+        opacity: 0.8;
+    } 
+    &:active{
+        transform: scale(1.02);
+    }
+`;
+
+const StyledLogIn = styled(StyledButton)`
+    &:hover{
+        opacity: 0.8;
+    } 
+    &:active{
+        transform: scale(1.02);
+    }
 `;
 
 const StyledMe = styled.span`
@@ -97,17 +114,26 @@ const StyledH4 = styled.h4`
     color: #FFD343;
 `;
 
+//handling navigation from home to login
 
 
 const HomePage = (props) => {
 
+    const goToLogin = () => {
+        window.location.assign('/login');
+    }
+
+    const goToSignup = () => {
+        window.location.assign('/signup');
+    }
+    
     return(
         <StyledContainer>
             <StyledNav>
                 <StyledLeftNav> IMD<StyledMe>me</StyledMe> </StyledLeftNav>
                 <StyledRightNav>
-                    <StyledButton> Login </StyledButton>
-                    <StyledSignUp> Sign Up </StyledSignUp>
+                    <StyledLogIn onClick = {goToLogin}> Login </StyledLogIn>
+                    <StyledSignUp onClick = {goToSignup}> Sign Up </StyledSignUp>
                 </StyledRightNav>
                 
             </StyledNav>

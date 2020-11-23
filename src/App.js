@@ -6,8 +6,16 @@ import {BrowserRouter, Switch, Route, Link} from "react-router-dom";
 
 function App() {
   return (
-    <div> 
-    </div>
+    <BrowserRouter>
+      <div>
+        <Switch>
+          <Route exact path= "/" component = {HomePage} />
+          <Route exact path= "/login" component = {Login} />
+          <Route exact path= "/Signup" component = {Signup} />
+          <Route exact path= "/dashboard" component = {Dashboard} />
+        </Switch>
+     </div>
+    </BrowserRouter>
   );
 }
 

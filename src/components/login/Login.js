@@ -72,6 +72,12 @@ const StyledLoginButton = styled.button`
 
 const StyledSignUp = styled(StyledButton)`
     background-color: #FFD343; 
+    &:hover{
+        opacity: 0.8;
+    } 
+    &:active{
+        transform: scale(1.02);
+    }
 `;
 
 const StyledMe = styled.span`
@@ -92,10 +98,18 @@ const StyledMain = styled.div`
 
 const Login = (props) => {
 
+    const goToSignup = () => {
+        window.location.assign('/signup');
+    }
+
+    const goHome = () => {
+        window.location.assign('/');
+    }
+
     return(
         <StyledContainer>
             <StyledNav>
-                <StyledLeftNav> IMD<StyledMe>me</StyledMe> </StyledLeftNav>
+                <StyledLeftNav onClick = {goHome}> IMD<StyledMe>me</StyledMe> </StyledLeftNav>
                 <StyledRightNav>
                     
                     
@@ -107,7 +121,7 @@ const Login = (props) => {
                     <h1> Welcome Back :) </h1>
                     <h2> Please login to access your dashboard and create watchlists</h2>
                     <h3> Don't have account? </h3>
-                    <StyledSignUp> Sign Up </StyledSignUp>
+                    <StyledSignUp onClick = {goToSignup}> Sign Up </StyledSignUp>
                 </div>
                 <div className = "Loghub">
                     <h1> Login </h1>

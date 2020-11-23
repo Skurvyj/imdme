@@ -70,8 +70,14 @@ const StyledLoginButton = styled.button`
     border: none;
 `;
 
-const StyledSignUp = styled(StyledButton)`
+const StyledLogIn = styled(StyledButton)`
     background-color: #FFD343; 
+    &:hover{
+        opacity: 0.8;
+    } 
+    &:active{
+        transform: scale(1.02);
+    }
 `;
 
 const StyledMe = styled.span`
@@ -92,10 +98,18 @@ const StyledMain = styled.div`
 
 const Signup = (props) => {
 
+    const goToLogin = () => {
+        window.location.assign('/login');
+    }
+
+    const goHome = () => {
+        window.location.assign('/');
+    }
+
     return(
         <StyledContainer>
             <StyledNav>
-                <StyledLeftNav> IMD<StyledMe>me</StyledMe> </StyledLeftNav>
+                <StyledLeftNav onClick = {goHome}> IMD<StyledMe>me</StyledMe> </StyledLeftNav>
                 <StyledRightNav>
                     
                     
@@ -107,7 +121,7 @@ const Signup = (props) => {
                     <h1> Welcome! </h1>
                     <h2> Create an account to start making, sharing, and exploring watchlists</h2>
                     <h3> Already have an account? </h3>
-                    <StyledSignUp> Login </StyledSignUp>
+                    <StyledLogIn onClick = {goToLogin}> Login </StyledLogIn>
                 </div>
                 <div className = "Loghub">
                     <h1> Sign Up </h1>
@@ -129,7 +143,11 @@ const Signup = (props) => {
                         //Need to replace this with stuff retrieved by backend!     
                         onSubmit={(values, { setSubmitting }) => {
                         setTimeout(() => {
-                         alert(JSON.stringify(values, null, 2));
+                         //Ahahahahahahahah    
+                         fetch('/signup',{
+                             method: 'POST',
+                             body: values,
+                         });
                         setSubmitting(false);
                         }, 400);
                     }}
