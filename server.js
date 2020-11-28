@@ -10,13 +10,13 @@ const port = process.env.PORT || 3000;
 const axios =  require('axios');
 require('dotenv').config();
 
-
-//`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_KEY}&language=en-US&query=${values.title}&page=1&include_adult=false`
-
+//set up express so we can parse json
 app.use(express.static(path.join(__dirname, 'build')));
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
+
+//set up pool connection
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
@@ -26,6 +26,7 @@ const pool = mysql.createPool({
 })
 
 
+//set up the session
 app.use(session({
   secret: 'idk if this matters',
   cookie: { 
@@ -50,6 +51,7 @@ app.post('/signup', (req, res) => {
          res.send('could not create an account')
          return
        }
+       //if we don't err, sign the user up and redirect them
        req.session.uid = result[1][0]['LAST_INSERT_ID()']
        res.redirect('/api/dashboard')
 
@@ -58,7 +60,7 @@ app.post('/signup', (req, res) => {
 })
 });
 
-/*logs the user in */
+/*logs the user in and redirects them to the dashboard*/
 app.post('/login', (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -75,11 +77,11 @@ app.post('/login', (req, res) => {
           const hash = result[0]['password'];
           // If we do not error, then the account exists. Now we check the password with bcrypt
           bcrypt.compare(password, hash, function(err, password_result) {
-            //if passwords don't match
+            //if passwords don't match do not log the user in
             if(err || !password_result){
               console.error(err)
               res.send('Wrong password')
-              //if they do match
+              //if they do match log the user in
             } else {
               req.session.uid = result[0]['id']
               res.redirect('/api/dashboard')
@@ -88,9 +90,13 @@ app.post('/login', (req, res) => {
         })
 });
 
+/* handles the creation of a new watchlist, enters the information, creates a watchlist object in an array
+and then sends that back to the react app */
 app.post('/dashboard/createwatchlist', (req,res) => {
+  //makes sure the user is logged in
   if(req.session.uid!= null){
     const title = req.body.title;
+      //insert the new watchlist into the database
       pool.query({
         sql: 'INSERT INTO watchlist (wl_title, user_id) VALUES(?, ?); SELECT LAST_INSERT_ID();',
         values: [title, req.session.uid]
@@ -100,7 +106,7 @@ app.post('/dashboard/createwatchlist', (req,res) => {
             res.send('Error With Creating Watchlist')
             return
           }
-
+          //if we do not err, find our new watchlist, create an object, return it
           const watchlistID = result[1][0]['LAST_INSERT_ID()'];
           pool.query({
             sql: 'SELECT * FROM watchlist WHERE wl_id=?',
@@ -111,7 +117,7 @@ app.post('/dashboard/createwatchlist', (req,res) => {
                 res.send('Error With Finding Watchlist')
                 return
               }
-
+              //creating the object to send back
               watchlist = {
                 id: result[0].wl_id,
                 wl_title: result[0].wl_title,
@@ -121,62 +127,84 @@ app.post('/dashboard/createwatchlist', (req,res) => {
             })        
       })
   } else {
-    console.log("something has gone terribly wrong")
+    console.log("user not logged in")
     return
   }
 
 });
 
+/* handles */
 app.post('/dashboard/addmovie', (req, res) => {
-  axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_KEY}&language=en-US&query=${req.body.title}&page=1&include_adult=false`, { 
-  }).then(function(response){
-    //returns the first search result and adds it
-    //come back and fix this later if there's time so user can choose from a few
-    const data = response.data.results[0]
-    const title = response.data.results[0].title
-    const posterpath = response.data.results[0].poster_path
-    pool.query({
-      sql: 'INSERT INTO movie (movie_title, poster_address, parent_watchlist_id) VALUES(?, ?, ?); SELECT LAST_INSERT_ID();',
-      values: [title, posterpath, req.body.wlID]
-    }, function(err, result) {
-        if(err){
-          console.error(err)
-          res.send('Error With Creating Movie')
-          return
-        }
-        const movieID = result[1][0]['LAST_INSERT_ID()'];
-        pool.query({
-          sql: 'SELECT * FROM movie WHERE movie_id=?',
-          values: [movieID]
-        }, function(err, result) {
-            if(err){
-              console.error(err)
-              res.send('Error With Finding Movie')
-              return
-            }
+//makes sure the user is logged in
+if(req.session.uid!= null){
+    axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_KEY}&language=en-US&query=${req.body.title}&page=1&include_adult=false`, { 
+    }).then(function(response){
+      //returns the first search result and adds it
+      //come back and fix this later if there's time so user can choose from a few. (there was not time)
 
-            movie =  {
-              movie_title: result[0].movie_title,
-              poster_link: 'https://image.tmdb.org/t/p/w500' + result[0].poster_address
+      //theoretically checks if the movie doesn't exist
+      if(response.data.results[0] === undefined || response.data.results[0] === null){
+        res.send("No such movie")
+      }
+      const data = response.data.results[0]
+      const title = response.data.results[0].title
+
+      //handles case where the movie exists, but there's no poster so it's value isn't null and SQL won't scream
+      let posterpath = "404"
+      if(response.data.results[0].poster_path !== null)
+      {
+        posterpath = response.data.results[0].poster_path
+      }
+      //inserts the movie into the database  
+      pool.query({
+        sql: 'INSERT INTO movie (movie_title, poster_address, parent_watchlist_id) VALUES(?, ?, ?); SELECT LAST_INSERT_ID();',
+        values: [title, posterpath, req.body.wlID]
+      }, function(err, result) {
+          if(err){
+            console.error(err)
+            res.send('Error With Creating Movie')
+            return
+          }
+          //if we do not err, create the movie object and return it
+          const movieID = result[1][0]['LAST_INSERT_ID()'];
+          pool.query({
+            sql: 'SELECT * FROM movie WHERE movie_id=?',
+            values: [movieID]
+          }, function(err, result) {
+              if(err){
+                console.error(err)
+                res.send('Error With Finding Movie')
+                return
               }
-            res.json([movie]) 
-          })    
-    })
-  }) 
+
+              movie =  {
+                movie_title: result[0].movie_title,
+                //sets up the link to the poster from the tmdb database (woo)
+                poster_link: 'https://image.tmdb.org/t/p/w500' + result[0].poster_address
+                }
+              res.json([movie]) 
+            })    
+      })
+    }) 
+  }
 });
 
+/* just loads the homepage */
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 });
 
+/* just loads the login page */
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 });
 
+/* just loads the signup page */
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 });
 
+/*loads the dashboard page if the user is logged in, else redirects to login */
 app.get('/dashboard', (req,res) => {
   if(req.session.uid!= null){
     res.sendFile(path.join(__dirname, 'build', 'index.html'))
@@ -185,8 +213,14 @@ app.get('/dashboard', (req,res) => {
   }
 });
 
+/*Finds, assembles, nicely prepares, and returns all the watchlists and movies in those watchlists
+  for a given user if logged in, else doesn't do that */
 app.get('/api/dashdata', (req, res) => {
   if(req.session.uid!=null){
+      //selects all watchlist ids, titles, userid and movie titles, poster addresses
+      //then joins movies to their corresponding watchlists
+      //so each instance in the table returned is a movie with the corresponding data
+      //left join so that watchlists without movies still get processed
       pool.query({
               sql: `SELECT * FROM (SELECT watchlist.wl_id, watchlist.wl_title, movie.movie_title, movie.poster_address, watchlist.user_id
                     FROM watchlist
@@ -199,12 +233,14 @@ app.get('/api/dashdata', (req, res) => {
                   res.send('An error has occurred')
                   return
               }
-              // If we do not error, compile watchlists
+              // If we do not error, compile each movie into its correct watchlist in the watchlist array
               let watchlists = []
               for(i = 0; i < result.length; i ++){
+                //if we've already encountered this watchlist
                 if(watchlists[result[i].wl_id]){
                   watchlists[result[i].wl_id].movies.push({movie_title: result[i].movie_title, poster_link: 'https://image.tmdb.org/t/p/w500' + result[i].poster_address})
                 } else {
+                  //if we haven't already encountered this watchlist
                   watchlists[result[i].wl_id] = {
                     id: result[i].wl_id,
                     wl_title: result[i].wl_title,
@@ -217,6 +253,7 @@ app.get('/api/dashdata', (req, res) => {
                 }
 
               }
+              //getting rid of the inevitable garbage in the array
               watchlists = watchlists.filter(wl => wl!==null && wl!==undefined)
               res.json({watchlists})
           }
@@ -228,7 +265,10 @@ app.get('/api/dashdata', (req, res) => {
 
 });
 
-//handles the redirects from signup/login to dashboard
+/*handles the redirects from signup/login to dashboard
+  still not sure why this was necessary but the entire app broke without it
+  I assume it has something to do with the interaction between
+  react router and express*/
 app.get('/api/dashboard', (req, res) => {
   let userstatus = false;
   if(req.session.uid!= null){
@@ -239,4 +279,5 @@ app.get('/api/dashboard', (req, res) => {
   res.json({userstatus});
 });
 
+//listen at the assigned port
 app.listen(port);

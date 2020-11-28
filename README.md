@@ -1,70 +1,48 @@
-# Getting Started with Create React App
+#IMDme 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+IMDme is a simple webapp created to help you organize and remember all those movies you've been meaning to watch.
 
-## Available Scripts
+#To Get Started
 
-In the project directory, you can run:
+Assuming I set this up correctly, all you should have to do is run the following command in your terminal to
+launch the app in your browser. 
 
-### `yarn start`
+```bash
+yarn start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+#Structure
+There are a few main parts to the repo.
+The src file is basically just the react app, components, styling
+The src file contains: 
+    App.js which is the main app set up with a react router
+    index.css which just sets the background color for all the pages
+    index.js which just tells the app to run
+    sample.env with environment variables for the TMDB API key and mySQL password
+    components file which contains:
+        Dashboard with Dashboard.js, AddMovie.js, CreateWatchlist.js components
+        Home with Homepage.js component
+        login with login.js component
+        Signup with Signup.js component
+It runs on an express server located in server.js that handles GET/POST requests
+package.json contains all the dependencies and scripts
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `yarn test`
+#Known Bugs
+1) The regex to check for valid input for Watchlist titles and Movie search queries doesn't work. I'm working on it.
+2) It doesn't handle the case where the movie doesn't exist very gracefully. It doesn't break, it's just not pretty.
+    Basically it refuses to add it to SQL database, so on the frontend an image not found icon comes through, if you
+    refresh the page though it goes away. So at least the bad movie isn't stored in the database!
+3) Visual bug if the title of a movie is too long, it gets hidden under the next row of movies.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#Project Contributors
+Just me
 
-### `yarn build`
+#The Future
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Right now, the app is pretty barebones in terms of functionality. In the future, I'd like to set it up to be
+a little more interactive, like Spotify. You should be able to share links to watchlists with friends as well
+as click on icons to redirect to watching the movie on Netflix, Hulu, Amazon Prime etc. 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
