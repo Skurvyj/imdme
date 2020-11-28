@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styled from "styled-components";
+import axios from "axios";
 
 
 const StyledContainer = styled.div`
@@ -19,7 +20,7 @@ const StyledNav = styled.div`
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-     width: 100%;
+    width: 100%;
     height: 80px;
     position: fixed;
     top: 0;
@@ -60,14 +61,25 @@ const StyledLoginButton = styled.button`
     margin: 10px;
     display:flex;
     justify-content: center; 
-    background-color: #F5EDD3;
+    background-color: #FFD343;
     width: 80px;
     min-width: 80px;
-    padding: 10px;
+    padding: 12px;
     color: #20166E;
     font-size: 20px;
     border-radius: 15px;
     border: none;
+    margin-top: 20px;
+    &:hover{
+        opacity: 0.8;
+    } 
+    &:active{
+        transform: scale(1.02);
+        ou
+    }
+    &:focus{
+        outline: none;
+    }
 `;
 
 const StyledSignUp = styled(StyledButton)`
@@ -87,10 +99,79 @@ const StyledMe = styled.span`
 const StyledMain = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     padding-top: 20vh;
-    align-items: center;
     width: 100%;
+`;
+
+const StyledWelcomeTextBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    max-width: 40%;
+    width: 40%;
+    height: 65vh;
+    margin-left: 40px;
+`;
+
+const StyledLoghub = styled.div`
+    background: #271D7C;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 40%;
+    width: 30%;
+    height: 65vh;
+    margin-right: 60px;
+    border-radius: 50px;
+    padding-top: 10px;
+    overflow: scroll;
+`;
+
+const StyledForm = styled(Form)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const StyledField = styled(Field)`
+    padding: 20px;
+    max-width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #9B90FC;
+    color: #F5EDD3;
+    border-style: none;
+    border-radius: 20px;
+    &::placeholder {
+       color: #F5EDD3;
+    }
+    &:focus{
+        outline: none;
+    }
+    
+`;
+
+const StyledLoginText = styled.h1`
+    font-weight: normal;
+    font-size: 50px;
+
+`;
+
+const StyledWelcomeText = styled.h1`
+    font-weight: normal;
+    color: #FFD343;
+
+`;
+
+const StyledSubtitle = styled.h2`
+    font-weight: normal;
+`;
+
+const StyledSubsubtitle = styled.h3`
+    font-weight: normal;
 `;
 
 
@@ -106,6 +187,10 @@ const Login = (props) => {
         window.location.assign('/');
     }
 
+    const goToDashboard = () => {
+        window.location.assign('/dashboard');
+    }
+
     return(
         <StyledContainer>
             <StyledNav>
@@ -117,14 +202,14 @@ const Login = (props) => {
                 
             </StyledNav>
             <StyledMain>
-                <div className = "Welcometext">
-                    <h1> Welcome Back :) </h1>
-                    <h2> Please login to access your dashboard and create watchlists</h2>
-                    <h3> Don't have account? </h3>
+                <StyledWelcomeTextBox>
+                    <StyledWelcomeText> Welcome Back :) </StyledWelcomeText>
+                    <StyledSubtitle> Please login to access your dashboard and create watchlists</StyledSubtitle>
+                    <StyledSubsubtitle> Don't have account? </StyledSubsubtitle>
                     <StyledSignUp onClick = {goToSignup}> Sign Up </StyledSignUp>
-                </div>
-                <div className = "Loghub">
-                    <h1> Login </h1>
+                </StyledWelcomeTextBox>
+                <StyledLoghub>
+                    <StyledLoginText> Login </StyledLoginText>
                     <Formik
                         //just checking that the email is there and valid
                         initialValues={{ email: '', password: '' }}
@@ -143,24 +228,35 @@ const Login = (props) => {
                         //Need to replace this with stuff retrieved by backend!     
                         onSubmit={(values, { setSubmitting }) => {
                         setTimeout(() => {
-                         alert(JSON.stringify(values, null, 2));
+                            axios.post('/login', {
+                                email: values.email,
+                                password: values.password  
+                              })
+                              .then(function(response){
+                                if(response.data.userstatus){
+                                    goToDashboard();
+                                } else {
+                                    alert("Email or password not recognized. If you haven't signed up for an account, please do!");
+                                    window.location.reload();
+                                }
+                              });
                         setSubmitting(false);
                         }, 400);
                     }}
                      >
                     {({ isSubmitting }) => (
-                        <Form>
+                        <StyledForm>
                             <ErrorMessage name="email" component="div" />
-                             <Field type="email" name="email"  placeholder = "Email"/>
+                             <StyledField type="email" name="email"  placeholder = "Email"/>
                              <ErrorMessage name="password" component="div" />
-                             <Field type="password" name="password" placeholder = "Password" />
+                             <StyledField type="password" name="password" placeholder = "Password" />
                              <StyledLoginButton type="submit" disabled={isSubmitting}>
                                  Login
                              </StyledLoginButton>
-                         </Form>
+                         </StyledForm>
                      )}
                     </Formik>  
-                </div>   
+                </StyledLoghub>   
             </StyledMain>
         </StyledContainer>
     );

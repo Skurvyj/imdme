@@ -1,7 +1,5 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import styled from "styled-components";
-import {Route, Switch} from "react-router-dom";
-import Login from "../login/Login";
 
 
 const StyledContainer = styled.div`
@@ -114,6 +112,18 @@ const StyledH4 = styled.h4`
     color: #FFD343;
 `;
 
+const StyledCredit = styled.div`
+    position: absolute;
+    z-index: 1000;
+    top: 90%;
+    left: 88%;
+`;
+
+const StyledCreditP = styled.p`
+    margin-bottom: 1px;
+    font-size: 10px;
+`;
+
 //handling navigation from home to login
 
 
@@ -145,7 +155,10 @@ const HomePage = (props) => {
                 <StyledH4> Make an account to get started</StyledH4>   
             </StyledMain>
 
-
+            <StyledCredit>
+                <StyledCreditP> powered by </StyledCreditP>
+                <img src ="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_long_1-8ba2ac31f354005783fab473602c34c3f4fd207150182061e425d366e4f34596.svg" width = "125" alt = "The Movie Database"></img>
+            </StyledCredit>   
         </StyledContainer>
     );
 };

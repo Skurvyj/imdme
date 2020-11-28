@@ -1,6 +1,7 @@
-import React, {useState, useEffect} from "react";
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styled from "styled-components";
+import axios from "axios";
 
 
 const StyledContainer = styled.div`
@@ -56,18 +57,29 @@ const StyledButton = styled.div`
     border: none;
 `;
 
-const StyledLoginButton = styled.button`
+const StyledSignUpButton = styled.button`
     margin: 10px;
     display:flex;
     justify-content: center; 
-    background-color: #F5EDD3;
-    width: 80px;
+    width: 100px;
     min-width: 80px;
     padding: 10px;
     color: #20166E;
     font-size: 20px;
     border-radius: 15px;
     border: none;
+    margin-top: 20px;
+
+    background-color: #FFD343; 
+    &:hover{
+        opacity: 0.8;
+    } 
+    &:active{
+        transform: scale(1.02);
+    }
+    &:focus{
+        outline: none;
+    }
 `;
 
 const StyledLogIn = styled(StyledButton)`
@@ -87,12 +99,82 @@ const StyledMe = styled.span`
 const StyledMain = styled.div`
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     padding-top: 20vh;
     align-items: center;
     width: 100%;
 `;
 
+const StyledWelcomeTextBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    max-width: 40%;
+    width: 40%;
+    height: 65vh;
+    margin-left: 40px;
+`;
+
+const StyledLoghub = styled.div`
+    background: #271D7C;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 40%;
+    width: 30%;
+    height: 65vh;
+    margin-right: 60px;
+    border-radius: 50px;
+    padding-top: 10px;
+    overflow: scroll;
+`;
+
+
+const StyledForm = styled(Form)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const StyledField = styled(Field)`
+    padding: 20px;
+    max-width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background: #9B90FC;
+    color: #F5EDD3;
+    border-style: none;
+    border-radius: 20px;
+    &::placeholder {
+       color: #F5EDD3;
+    }
+    &:focus{
+        outline: none;
+    }
+    
+`;
+
+const StyledSignUpText = styled.h1`
+    font-weight: normal;
+    font-size: 50px;
+
+`;
+
+const StyledWelcomeText = styled.h1`
+    font-weight: normal;
+    color: #FFD343;
+
+`;
+
+const StyledSubtitle = styled.h2`
+    font-weight: normal;
+`;
+
+const StyledSubsubtitle = styled.h3`
+    font-weight: normal;
+`;
 
 
 
@@ -106,6 +188,10 @@ const Signup = (props) => {
         window.location.assign('/');
     }
 
+    const goToDashboard = () => {
+        window.location.assign('/dashboard');
+    }
+
     return(
         <StyledContainer>
             <StyledNav>
@@ -117,14 +203,14 @@ const Signup = (props) => {
                 
             </StyledNav>
             <StyledMain>
-                <div className = "Welcometext">
-                    <h1> Welcome! </h1>
-                    <h2> Create an account to start making, sharing, and exploring watchlists</h2>
-                    <h3> Already have an account? </h3>
+                <StyledWelcomeTextBox>
+                    <StyledWelcomeText> Welcome! </StyledWelcomeText>
+                    <StyledSubtitle> Create an account to start making, sharing, and exploring watchlists</StyledSubtitle>
+                    <StyledSubsubtitle> Already have an account? </StyledSubsubtitle>
                     <StyledLogIn onClick = {goToLogin}> Login </StyledLogIn>
-                </div>
-                <div className = "Loghub">
-                    <h1> Sign Up </h1>
+                </StyledWelcomeTextBox>
+                <StyledLoghub>
+                    <StyledSignUpText> Sign Up </StyledSignUpText>
                     <Formik
                         //just checking that the email is there and valid
                         initialValues={{ email: '', password: '' }}
@@ -142,29 +228,37 @@ const Signup = (props) => {
 
                         //Need to replace this with stuff retrieved by backend!     
                         onSubmit={(values, { setSubmitting }) => {
-                        setTimeout(() => {
-                         //Ahahahahahahahah    
-                         fetch('/signup',{
-                             method: 'POST',
-                             body: values,
-                         });
-                        setSubmitting(false);
-                        }, 400);
+                        //setTimeout(() => {
+                        axios.post('/signup', {
+                            email: values.email,
+                            password: values.password  
+                          })
+                          .then(function(response){
+                              if(response.data.userstatus){
+                                  goToDashboard();
+                              } else {
+                                  alert("There's already a user with that email! Please go to login if you already have an account.");
+                                  window.location.reload();
+                              }
+                            
+                          });
+                          setSubmitting(false);
+                        //}, 400);
                     }}
                      >
                     {({ isSubmitting }) => (
-                        <Form>
+                        <StyledForm>
                             <ErrorMessage name="email" component="div" />
-                             <Field type="email" name="email"  placeholder = "Email"/>
+                             <StyledField type="email" name="email"  placeholder = "Email"/>
                              <ErrorMessage name="password" component="div" />
-                             <Field type="password" name="password" placeholder = "Password" />
-                             <StyledLoginButton type="submit" disabled={isSubmitting}>
+                             <StyledField type="password" name="password" placeholder = "Password" />
+                             <StyledSignUpButton type="submit" disabled={isSubmitting}>
                                  Sign Up
-                             </StyledLoginButton>
-                         </Form>
+                             </StyledSignUpButton>
+                         </StyledForm>
                      )}
                     </Formik>  
-                </div>   
+                </StyledLoghub>   
             </StyledMain>
         </StyledContainer>
     );
