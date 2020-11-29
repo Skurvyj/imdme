@@ -25,6 +25,8 @@ const pool = mysql.createPool({
   multipleStatements: true
 })
 
+const pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL)
+
 
 //set up the session
 app.use(session({
