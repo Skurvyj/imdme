@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styled from "styled-components";
 import axios from "axios";
 
-
+//styled components for create watchlist
 const StyledWrapper = styled.div`
     background: #9B90FC;
     display: flex;
@@ -13,8 +13,6 @@ const StyledWrapper = styled.div`
     justify-content: space-around;
     align-items: center;
     border-radius: 50px;
-
-
 `;
 const StyledSubmit = styled.button`
     margin: 10px;
@@ -78,13 +76,16 @@ const StyledSubtitle = styled.h3`
 
 const CreateWatchlist = (props) => {
 
+    //handles show watchlist state
     const [showWL, setShowWL] = useState(false);
 
+    //handles user submitting form and tells dashboard to remove it
     const handleCreate = () => {
         setShowWL(false)
         props.handleDontShowWL(showWL);
     }
 
+    //sends the newly created watchlist to Dashboar
     const updateWL =(newWL) => {
         props.updateWatchlists(newWL)
     }
@@ -107,12 +108,13 @@ const CreateWatchlist = (props) => {
                         return errors;
                     }}
 
-        //Need to replace this with stuff retrieved by backend! 
+        //sends the watchlist title to the server and sends the watchlist object to updateWL 
             onSubmit={(values, { setSubmitting }) => {
                 setTimeout(() => {
                     axios.post('/dashboard/createwatchlist', {
                         title: values.title, 
                       })
+                      //sends the watchlist object to updateWL
                       .then(function(response){  
                         updateWL(response.data)
                       });

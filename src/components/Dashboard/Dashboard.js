@@ -5,6 +5,7 @@ import AddMovie from"./AddMovie";
 import axios from "axios";
 
 
+//styled components for the dashboard
 const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -163,52 +164,68 @@ const StyledPoster = styled.div`
 `
 
 const Dashboard = (props) => {
-    //add a state for current watchlist, watchlists!
-
     /*handles whether we want to show the creation popups, and the current watchlist
     1) initial values for the creation popups are false since we only want to show them
     upon user interaction. 
     2) currentWL will correspond to its ID, since -1 is an impossible ID it's our default */
 
-    /*{watchlists.map(watchlist => (
-                            <p key = {watchlist.id}> {watchlist.wl_title} </p>
-                        ))}*/
     
+    //handles whether we want to show the CreateWatchlist popup
     const [showCreateWL, setCreateWL] = useState(false);
+
+    //handles whether we want to show the AddMovie popup
     const [showAddMovie, setAddMovie] = useState(false);
+
+    //the watchlist currently being shown to the user
     const [currentWL, setCurrentWL] = useState(undefined);
+
+    //the watchlists of the user
     const [watchlists, setWatchlists] = useState([])
+
+    //the movies corresponding to the current watchlist
     const [currentMovs, setCurrentMovs] = useState(undefined)
-    //const [watchlistNonEmpty, setWLNonEmpty] = useState(false);
+
+    //makes it so UseEffect doesn't run infinitely cuz apparently it needs to be told not to do that
     const [getDashData, setGetDashData] = useState(true)
 
-
-
+    //updates showCreateWL to show the popup
     const handleSetWLClick = () => {
         setCreateWL(true);
     }
 
+    //updates showCreateWL to take away the popup
     const noShowWL = (popUpData) => {
         setCreateWL(popUpData)
     }
 
+    //updates showAddMovie to take away the popup
     const noShowAM = (popUpData) => {
         setAddMovie(popUpData)
     }
+
+    //updates showAddMovie to show the popup
     const handleAddMovieClick = () => {
         setAddMovie(true);
     }
 
+    //handles the user creating the new watchlist, adds it to watchlists state
     const addNewWatchlist = (newWatchlist) => {
         setWatchlists(watchlists.concat(newWatchlist))
     }
 
+    /*handles the user creating a new movie, adds it to the currentMovies and
+      the movies array inside of the current movie, so it doesn't go away when 
+      the user clicks to a new watchlist*/
     const addNewMovie = (newMov) => {
         setCurrentMovs(currentMovs.concat(newMov))
         currentWL.movies = currentWL.movies.concat(newMov);   
     }
 
+    /*gets the data from SQL database and sets up the state variables
+      so that watchlists, currentWatchlist, and currentMovies are set 
+      to the correct values*/
     useEffect(() =>  {
+        //so it doesn't run infinitely
         if(getDashData){
             axios.get('/api/dashdata')
             .then(function(response){ 
@@ -224,11 +241,14 @@ const Dashboard = (props) => {
         }  
     })
 
+    //handles when the user clicks a new watchlist
+    //loads the corresponding movies and sets the state variables for current WL/movie
     const loadmovies = (wl) => {
         setCurrentWL(wl);
         setCurrentMovs(wl.movies);
     }
 
+    //creates components for each movie in currentMovs
     let currentWLMovsDisplay = undefined;
     if(currentMovs!== undefined){
         currentWLMovsDisplay = currentMovs.map((movie) => 
@@ -239,12 +259,12 @@ const Dashboard = (props) => {
         );
     }
     
-    //formats the watchlist titles to put into
+    //creates components for each watchlist in watchlists state
     const watchlistTitles = watchlists.map((watchlist) => 
         <StyledWatchListItem key ={watchlist.id} onClick = {() => loadmovies(watchlist)}>{watchlist.wl_title}</StyledWatchListItem>                
      );
     
-    
+    //the actual jsx for the page
     return(
         <StyledContainer>
             <StyledNav>

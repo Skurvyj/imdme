@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from "axios";
 
 
+//styled components for the login page
 const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -179,14 +180,17 @@ const StyledSubsubtitle = styled.h3`
 
 const Login = (props) => {
 
+    //sends the user to the signup page
     const goToSignup = () => {
         window.location.assign('/signup');
     }
 
+    //sends the user to the homepage
     const goHome = () => {
         window.location.assign('/');
     }
 
+    //sends the user to their dashboard
     const goToDashboard = () => {
         window.location.assign('/dashboard');
     }
@@ -225,7 +229,7 @@ const Login = (props) => {
                                  return errors;
                              }}
 
-                        //Need to replace this with stuff retrieved by backend!     
+                        //sends login credentials to the server   
                         onSubmit={(values, { setSubmitting }) => {
                         setTimeout(() => {
                             axios.post('/login', {
@@ -233,8 +237,10 @@ const Login = (props) => {
                                 password: values.password  
                               })
                               .then(function(response){
+                                //if user exists and has the right password
                                 if(response.data.userstatus){
                                     goToDashboard();
+                                //if user does not exist or entered the wrong password
                                 } else {
                                     alert("Email or password not recognized. If you haven't signed up for an account, please do!");
                                     window.location.reload();

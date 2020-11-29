@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 
+//styled components for the homepage
 const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -124,15 +125,15 @@ const StyledCreditP = styled.p`
     font-size: 10px;
 `;
 
-//handling navigation from home to login
-
 
 const HomePage = (props) => {
 
+    //sends the user to the login page
     const goToLogin = () => {
         window.location.assign('/login');
     }
 
+    //sends the user to the signup page
     const goToSignup = () => {
         window.location.assign('/signup');
     }

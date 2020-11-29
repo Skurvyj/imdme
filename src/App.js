@@ -5,6 +5,7 @@ import Dashboard from"./components/Dashboard/Dashboard";
 import {BrowserRouter, Switch, Route} from "react-router-dom";
 
 function App() {
+  //react router for the page
   return (
     <BrowserRouter>
       <div>

@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import styled from "styled-components";
 import axios from "axios";
 
-
+//styled components for addMovie 
 const StyledWrapper = styled.div`
     background: #9B90FC;
     display: flex;
@@ -79,13 +79,17 @@ const StyledSubtitle = styled.h3`
 
 const AddMovie = (props) => {
 
+    //state for whether or not to show itself
     const [showAM, setShowAM] = useState(false);
 
+    /*handles the user submitting the form
+      tells Dashboard to close the popup*/
     const handleCreate = () => {
         setShowAM(false)
         props.handleDontShowAM(showAM);
     }
 
+    //sends the newly added movie to Dashboard
     const addMov =(newMov) => {
         props.updateMovies(newMov)
     }
@@ -108,17 +112,19 @@ const AddMovie = (props) => {
                         return errors;
                     }}
                     
-        //Need to replace this with stuff retrieved by backend! 
+            //sends the new movie title and the watchlist id to the server  
             onSubmit={(values, { setSubmitting }) => {
                 setTimeout(() => {
                     axios.post('/dashboard/addmovie', { 
                         title: values.title,
                         wlID: props.currentWLID
                       })
+                      //sends the newly created movie to AddMov
                       .then(function(response){   
                         addMov(response.data)
                       });
                     setSubmitting(false);
+                    //handles closing the popup
                     handleCreate();
                 }, 400);   
                 }}    

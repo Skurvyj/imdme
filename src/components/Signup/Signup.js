@@ -4,6 +4,7 @@ import styled from "styled-components";
 import axios from "axios";
 
 
+//styled components for signup
 const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -180,14 +181,17 @@ const StyledSubsubtitle = styled.h3`
 
 const Signup = (props) => {
 
+    //sends user to login page
     const goToLogin = () => {
         window.location.assign('/login');
     }
 
+    //sends user to home page
     const goHome = () => {
         window.location.assign('/');
     }
 
+    //sends user to dashboard
     const goToDashboard = () => {
         window.location.assign('/dashboard');
     }
@@ -196,9 +200,7 @@ const Signup = (props) => {
         <StyledContainer>
             <StyledNav>
                 <StyledLeftNav onClick = {goHome}> IMD<StyledMe>me</StyledMe> </StyledLeftNav>
-                <StyledRightNav>
-                    
-                    
+                <StyledRightNav>    
                 </StyledRightNav>
                 
             </StyledNav>
@@ -226,16 +228,21 @@ const Signup = (props) => {
                                  return errors;
                              }}
 
-                        //Need to replace this with stuff retrieved by backend!     
+                        /* posts the user data to the server
+                            and redirects the user to their 
+                            new dashboard if their signup
+                            is successful */     
                         onSubmit={(values, { setSubmitting }) => {
-                        //setTimeout(() => {
+                        setTimeout(() => {
                         axios.post('/signup', {
                             email: values.email,
                             password: values.password  
                           })
                           .then(function(response){
+                              //if the signup was successful
                               if(response.data.userstatus){
                                   goToDashboard();
+                             //if the signup was not successful
                               } else {
                                   alert("There's already a user with that email! Please go to login if you already have an account.");
                                   window.location.reload();
@@ -243,7 +250,7 @@ const Signup = (props) => {
                             
                           });
                           setSubmitting(false);
-                        //}, 400);
+                        }, 400);
                     }}
                      >
                     {({ isSubmitting }) => (
