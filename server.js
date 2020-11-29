@@ -17,13 +17,7 @@ app.use(bodyParser.json())
 
 
 //set up pool connection
-const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: process.env.SQL_PWORD,
-  database: 'imdmedata',
-  multipleStatements: true
-})
+const pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL)
 
 
 //set up the session
