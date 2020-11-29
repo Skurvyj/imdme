@@ -1,6 +1,7 @@
 # IMDme 
 
-IMDme is a simple webapp created to help you organize and remember all those movies you've been meaning to watch.
+IMDme is a simple webapp created to help you organize and remember all those movies you've been meaning to watch. <br/>
+It's up and running here: https://imdmebeta.herokuapp.com/dashboard
 
 # To Get Started
 

@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json())
 
 
-//set up pool connection
+//set up pool connection on local machine
 /*
 const pool = mysql.createPool({
   host: 'localhost',
