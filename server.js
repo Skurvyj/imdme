@@ -17,14 +17,16 @@ app.use(bodyParser.json())
 
 
 //set up pool connection
+/*
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: process.env.SQL_PWORD,
   database: 'imdmedata',
   multipleStatements: true
-})
+})*/
 
+//set up pool connection for heroku
 const pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL)
 
 
