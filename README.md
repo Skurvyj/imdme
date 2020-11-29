@@ -5,27 +5,27 @@ IMDme is a simple webapp created to help you organize and remember all those mov
 #To Get Started
 
 Assuming I set this up correctly, all you should have to do is run the following command in your terminal to
-launch the app in your browser. 
+launch the app in your browser at localhost:3000
 
 ```bash
 yarn start
 ```
 
 # Structure
-There are a few main parts to the repo.
-The src file is basically just the react app, components, styling
-The src file contains: 
-    App.js which is the main app set up with a react router
-    index.css which just sets the background color for all the pages
-    index.js which just tells the app to run
-    sample.env with environment variables for the TMDB API key and mySQL password
-    components file which contains:
-        Dashboard with Dashboard.js, AddMovie.js, CreateWatchlist.js components
-        Home with Homepage.js component
-        login with login.js component
-        Signup with Signup.js component
-It runs on an express server located in server.js that handles GET/POST requests
-package.json contains all the dependencies and scripts
+There are a few main parts to the repo. <br/>
+The src file is basically just the react app, components, styling<br/>
+The src file contains: <br/>
+     - App.js which is the main app set up with a react router<br/>
+     - index.css which just sets the background color for all the pages<br/>
+     - index.js which just tells the app to run<br/>
+     - sample.env with environment variables for the TMDB API key and mySQL password<br/>
+    - components file which contains:<br/>
+       - Dashboard with Dashboard.js, AddMovie.js, CreateWatchlist.js components<br/>
+        -Home with Homepage.js component<br/>
+        -login with login.js component<br/>
+        -Signup with Signup.js component<br/>
+It runs on an express server located in server.js that handles GET/POST requests<br/>
+package.json contains all the dependencies and scripts<br/>
 
 
 # Known Bugs
