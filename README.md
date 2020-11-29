@@ -2,7 +2,7 @@
 
 IMDme is a simple webapp created to help you organize and remember all those movies you've been meaning to watch.
 
-#To Get Started
+# To Get Started
 
 Assuming I set this up correctly, all you should have to do after you set up the database
 is run the following command in your terminal to launch the app in your browser at localhost:3000
