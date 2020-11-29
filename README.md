@@ -6,6 +6,8 @@ IMDme is a simple webapp created to help you organize and remember all those mov
 
 Assuming I set this up correctly, all you should have to do after you set up the database
 is run the following command in your terminal to launch the app in your browser at localhost:3000
+Also, make sure to comment out the heroku pool connection and uncomment out the local pool connection
+in server.js if you want to run it locally.
 
 ```bash
 yarn start
