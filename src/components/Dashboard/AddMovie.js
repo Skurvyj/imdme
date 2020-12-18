@@ -121,7 +121,8 @@ const AddMovie = (props) => {
                       })
                       //sends the newly created movie to AddMov
                       .then(function(response){   
-                        addMov(response.data)
+                        addMov(response.data) 
+                        console.log(response)
                       });
                     setSubmitting(false);
                     //handles closing the popup

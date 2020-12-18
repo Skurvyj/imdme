@@ -10,7 +10,7 @@ const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: brigade; 
+    font-family: brigade;
     font-weight: normal;
     color: #F5EDD3;
 `;
@@ -104,10 +104,8 @@ const StyledListBox = styled.div`
     overflow: scroll;
     margin-bottom: 10px;
     text-align: center;
-    overflow-wrap: normal;
+    white-space: nowrap;
 `;
-
-
 
 const StyledAddButton = styled.div`
     display: flex;
@@ -132,6 +130,10 @@ const StyledPopUp = styled.div`
 `;
 
 const StyledWatchListItem = styled.p`
+    max-width: 95%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     &:active{
         color: #FFD343;
     }
@@ -159,8 +161,20 @@ const StyledPoster = styled.div`
     margin: 10px;
     max-width: 105px;
     max-height: 200px;  
-    text-align: center;
-    overflow-wrap: normal; 
+    text-align: center; 
+    overflow: hidden;
+`
+
+const StyledMovieContainer = styled.div`
+    position: relative;
+`
+const StyledDelete = styled.p`
+    font-size: 20px;
+    position: absolute;
+    top: -12px;
+    left: 98px;
+    z-index: 100;
+    color: white;
 `
 
 const Dashboard = (props) => {
@@ -185,8 +199,9 @@ const Dashboard = (props) => {
     //the movies corresponding to the current watchlist
     const [currentMovs, setCurrentMovs] = useState(undefined)
 
-    //makes it so UseEffect doesn't run infinitely cuz apparently it needs to be told not to do that
-    const [getDashData, setGetDashData] = useState(true)
+    //manages when we get the initial data so there aren't errors
+     const [getDashData, setGetDashData] = useState(true)
+    
 
     //updates showCreateWL to show the popup
     const handleSetWLClick = () => {
@@ -210,15 +225,28 @@ const Dashboard = (props) => {
 
     //handles the user creating the new watchlist, adds it to watchlists state
     const addNewWatchlist = (newWatchlist) => {
-        setWatchlists(watchlists.concat(newWatchlist))
+        if (newWatchlist === "Error With Creating Watchlist" || newWatchlist === "Error With Finding Watchlist")
+        {
+            
+        } else {
+            setWatchlists(watchlists.concat(newWatchlist))
+        }
+        
     }
 
     /*handles the user creating a new movie, adds it to the currentMovies and
       the movies array inside of the current movie, so it doesn't go away when 
       the user clicks to a new watchlist*/
     const addNewMovie = (newMov) => {
-        setCurrentMovs(currentMovs.concat(newMov))
-        currentWL.movies = currentWL.movies.concat(newMov);   
+        if(newMov === "No such movie"){
+            alert("Sorry we were unable to locate a movie of that title!");
+        } else if (newMov === "Error With Finding Movie" || newMov === "Error With Creating Movie"){
+            alert("Sorry, there seems to be a bug. Report it and we'll squash that right away.");
+        } else {
+            setCurrentMovs(currentMovs.concat(newMov))
+            currentWL.movies = currentWL.movies.concat(newMov); 
+        }
+       
     }
 
     /*gets the data from SQL database and sets up the state variables
@@ -236,10 +264,14 @@ const Dashboard = (props) => {
                     setCurrentMovs(response.data.watchlists[0].movies)           
                 }
                   
+            }).catch(err =>  {
+                console.log("Couldn't retrieve dash data.")
             });
+          //to stop it from running the get request too early
+          //and to stop it from looping infinitely  
           setGetDashData(false); 
         }  
-    })
+    }, [getDashData])
 
     //handles when the user clicks a new watchlist
     //loads the corresponding movies and sets the state variables for current WL/movie
@@ -248,14 +280,31 @@ const Dashboard = (props) => {
         setCurrentMovs(wl.movies);
     }
 
+    const deleteMovie = (movID) => {
+        axios.post('/dashboard/deletemovie', {
+            id: movID, 
+          })
+          //deletes the movie on the frontend
+          .then(function(response){
+              currentWL.movies = currentWL.movies.filter((mov) => mov.movie_id !== movID)
+              setCurrentMovs(currentMovs.filter((mov) => mov.movie_id !== movID))
+          });
+
+          
+
+    }
+
     //creates components for each movie in currentMovs
     let currentWLMovsDisplay = undefined;
     if(currentMovs!== undefined){
         currentWLMovsDisplay = currentMovs.map((movie) => 
-            <StyledPoster>
+        <StyledMovieContainer>
+            <StyledPoster key = {movie.movie_id}>
+                <StyledDelete onClick = {() => deleteMovie(movie.movie_id)}> x </StyledDelete>
                 <img src= {movie.poster_link} alt="Poster" width = "100" height = "150"/>
                 <p> {movie.movie_title}</p>
             </StyledPoster>
+        </StyledMovieContainer>
         );
     }
     

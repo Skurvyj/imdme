@@ -5,7 +5,8 @@ It's up and running here: https://imdmebeta.herokuapp.com
 
 # To Get Started
 
-Assuming I set this up correctly, all you should have to do after you set up the database
+Assuming I set this up correctly, all you should have to do after you set up the database 
+and add your API Key and mySQL password into a .env file as outlined in sample.env 
 is run the following command in your terminal to launch the app in your browser at localhost:3000
 Also, make sure to comment out the heroku pool connection and uncomment out the local pool connection
 in server.js if you want to run it locally.
@@ -35,11 +36,7 @@ package.json contains all the dependencies and scripts<br/>
 
 
 # Known Bugs
-1) The regex to check for valid input for Watchlist titles and Movie search queries doesn't work. I'm working on it.
-2) It doesn't handle the case where the movie doesn't exist very gracefully. It doesn't break, it's just not pretty.
-    Basically it refuses to add it to SQL database, so on the frontend an image not found icon comes through, if you
-    refresh the page though it goes away. So at least the bad movie isn't stored in the database!
-3) Visual bug if the title of a movie is too long, it gets hidden under the next row of movies.
+1) The regex to check for valid input for Watchlist titles and Movie search queries doesn't work.
 
 # Project Contributors
 Just me

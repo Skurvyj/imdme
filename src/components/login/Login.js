@@ -47,7 +47,7 @@ const StyledRightNav = styled.div`
 const StyledButton = styled.div`
     margin: 10px;
     display:flex;
-    justify-content: center; 
+    justify-content: center;
     background-color: #F5EDD3;
     width: 80px;
     min-width: 80px;

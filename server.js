@@ -17,17 +17,17 @@ app.use(bodyParser.json())
 
 
 //set up pool connection on local machine
-/*
+
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: process.env.SQL_PWORD,
   database: 'imdmedata',
   multipleStatements: true
-})*/
+})
 
 //set up pool connection for heroku
-const pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL)
+//const pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL)
 
 
 //set up the session
@@ -107,7 +107,7 @@ app.post('/dashboard/createwatchlist', (req,res) => {
       }, function(err, result) {
           if(err){
             console.error(err)
-            res.send('Error With Creating Watchlist')
+            res.send("Error With Creating Watchlist")
             return
           }
           //if we do not err, find our new watchlist, create an object, return it
@@ -118,7 +118,7 @@ app.post('/dashboard/createwatchlist', (req,res) => {
           }, function(err, result) {
               if(err){
                 console.error(err)
-                res.send('Error With Finding Watchlist')
+                res.send("Error With Finding Watchlist")
                 return
               }
               //creating the object to send back
@@ -149,6 +149,7 @@ if(req.session.uid!= null){
       //theoretically checks if the movie doesn't exist
       if(response.data.results[0] === undefined || response.data.results[0] === null){
         res.send("No such movie")
+        return
       }
       const data = response.data.results[0]
       const title = response.data.results[0].title
@@ -166,7 +167,7 @@ if(req.session.uid!= null){
       }, function(err, result) {
           if(err){
             console.error(err)
-            res.send('Error With Creating Movie')
+            res.send("Error With Creating Movie")
             return
           }
           //if we do not err, create the movie object and return it
@@ -177,11 +178,12 @@ if(req.session.uid!= null){
           }, function(err, result) {
               if(err){
                 console.error(err)
-                res.send('Error With Finding Movie')
+                res.send("Error With Finding Movie")
                 return
               }
 
               movie =  {
+                movie_id: movieID,
                 movie_title: result[0].movie_title,
                 //sets up the link to the poster from the tmdb database (woo)
                 poster_link: 'https://image.tmdb.org/t/p/w500' + result[0].poster_address
@@ -190,6 +192,22 @@ if(req.session.uid!= null){
             })    
       })
     }) 
+  }
+});
+
+app.post('/dashboard/deletemovie', (req, res) => {
+  if(req.session.uid!= null){
+    pool.query({
+      sql: 'DELETE FROM movie WHERE movie_id =?',
+      values:[req.body.id],
+      }, function(err, result){
+       if(err) {
+         console.error(err)
+         res.send('Could not delete movie')
+         return
+       }
+       res.send("Deleted")
+    })
   }
 });
 
@@ -226,7 +244,7 @@ app.get('/api/dashdata', (req, res) => {
       //so each instance in the table returned is a movie with the corresponding data
       //left join so that watchlists without movies still get processed
       pool.query({
-              sql: `SELECT * FROM (SELECT watchlist.wl_id, watchlist.wl_title, movie.movie_title, movie.poster_address, watchlist.user_id
+              sql: `SELECT * FROM (SELECT watchlist.wl_id, watchlist.wl_title, movie.movie_title, movie.poster_address, watchlist.user_id, movie.movie_id
                     FROM watchlist
                     LEFT JOIN movie ON watchlist.wl_id=movie.parent_watchlist_id) AS userwatchlists
                     WHERE userwatchlists.user_id = ?;`,
@@ -242,13 +260,14 @@ app.get('/api/dashdata', (req, res) => {
               for(i = 0; i < result.length; i ++){
                 //if we've already encountered this watchlist
                 if(watchlists[result[i].wl_id]){
-                  watchlists[result[i].wl_id].movies.push({movie_title: result[i].movie_title, poster_link: 'https://image.tmdb.org/t/p/w500' + result[i].poster_address})
+                  watchlists[result[i].wl_id].movies.push({movie_id: result[i].movie_id, movie_title: result[i].movie_title, poster_link: 'https://image.tmdb.org/t/p/w500' + result[i].poster_address})
                 } else {
                   //if we haven't already encountered this watchlist
                   watchlists[result[i].wl_id] = {
                     id: result[i].wl_id,
                     wl_title: result[i].wl_title,
                     movies: result[i].movie_title ? [{
+                      movie_id: result[i].movie_id,
                       movie_title: result[i].movie_title,
                       poster_link: 'https://image.tmdb.org/t/p/w500' + result[i].poster_address
                     }] : []
