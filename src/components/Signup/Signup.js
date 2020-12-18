@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: futura; 
+    font-family: brigade; 
     font-weight: normal;
     color: #F5EDD3;
     
@@ -59,6 +59,7 @@ const StyledButton = styled.div`
 `;
 
 const StyledSignUpButton = styled.button`
+    font-family: brigade; 
     margin: 10px;
     display:flex;
     justify-content: center; 
@@ -166,15 +167,18 @@ const StyledSignUpText = styled.h1`
 const StyledWelcomeText = styled.h1`
     font-weight: normal;
     color: #FFD343;
+    font-size: 40px;
 
 `;
 
 const StyledSubtitle = styled.h2`
     font-weight: normal;
+    font-size: 30px;
 `;
 
 const StyledSubsubtitle = styled.h3`
     font-weight: normal;
+    font-size: 20px;
 `;
 
 

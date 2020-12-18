@@ -7,8 +7,7 @@ const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: futura; 
-    font-weight: normal;
+    font-family: brigade;
     color: #F5EDD3;
     
 
@@ -51,7 +50,7 @@ const StyledButton = styled.div`
     min-width: 80px;
     padding: 10px;
     color: #20166E;
-    font-size: 20px;
+    font-size: 25px;
     border-radius: 15px;
     border: none;
 `;
@@ -83,25 +82,28 @@ const StyledMain = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    padding-top: 20vh;
+    padding-top: 15vh;
     align-items: center;
     width: 100%;
 `;
 
 const StyledH1 = styled.h1`
     font-weight: normal;
-    font-size: 70px;
-    top: 10px;
+    font-size: 80px;
+    position: relative;
+    top: 30px;
+    
 `;
 
 const StyledH2 = styled.h2`
     font-weight: normal;
-    font-size: 35px;
+    font-size: 40px;
+    position: relative: 
 `;
 
 const StyledP = styled.p`
     font-weight: normal;
-    font-size: 18px;
+    font-size: 22px;
     width: 60%;
     text-align: center;
     margin-bottom: 10px;

@@ -9,7 +9,7 @@ const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: futura; 
+    font-family: brigade; 
     font-weight: normal;
     color: #F5EDD3;
     
@@ -59,6 +59,7 @@ const StyledButton = styled.div`
 `;
 
 const StyledLoginButton = styled.button`
+    font-family: brigade; 
     margin: 10px;
     display:flex;
     justify-content: center; 
@@ -137,7 +138,7 @@ const StyledForm = styled(Form)`
     align-items: center;
 `;
 
-const StyledField = styled(Field)`
+const StyledField = styled(Field)` 
     padding: 20px;
     max-width: 100%;
     margin-top: 10px;
@@ -163,16 +164,19 @@ const StyledLoginText = styled.h1`
 
 const StyledWelcomeText = styled.h1`
     font-weight: normal;
+    font-size: 40px;
     color: #FFD343;
 
 `;
 
 const StyledSubtitle = styled.h2`
     font-weight: normal;
+    font-size: 30px;
 `;
 
 const StyledSubsubtitle = styled.h3`
     font-weight: normal;
+    font-size: 20px;
 `;
 
 
@@ -207,7 +211,7 @@ const Login = (props) => {
             </StyledNav>
             <StyledMain>
                 <StyledWelcomeTextBox>
-                    <StyledWelcomeText> Welcome Back :) </StyledWelcomeText>
+                    <StyledWelcomeText> Welcome Back ! </StyledWelcomeText>
                     <StyledSubtitle> Please login to access your dashboard and create watchlists</StyledSubtitle>
                     <StyledSubsubtitle> Don't have account? </StyledSubsubtitle>
                     <StyledSignUp onClick = {goToSignup}> Sign Up </StyledSignUp>

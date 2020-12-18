@@ -15,6 +15,7 @@ const StyledWrapper = styled.div`
     border-radius: 50px;
 `;
 const StyledSubmit = styled.button`
+    font-family: brigade;
     margin: 10px;
     display:flex;
     justify-content: center; 

@@ -10,7 +10,7 @@ const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: futura; 
+    font-family: brigade; 
     font-weight: normal;
     color: #F5EDD3;
 `;
