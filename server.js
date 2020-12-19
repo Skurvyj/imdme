@@ -18,16 +18,16 @@ app.use(bodyParser.json())
 
 //set up pool connection on local machine
 
-const pool = mysql.createPool({
+/*const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: process.env.SQL_PWORD,
   database: 'imdmedata',
   multipleStatements: true
-})
+})*/
 
 //set up pool connection for heroku
-//const pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL)
+const pool = mysql.createPool(process.env.CLEARDB_DATABASE_URL)
 
 
 //set up the session
@@ -155,7 +155,7 @@ if(req.session.uid!= null){
       const title = response.data.results[0].title
 
       //handles case where the movie exists, but there's no poster so it's value isn't null and SQL won't scream
-      let posterpath = "404"
+      let posterpath = 'none'
       if(response.data.results[0].poster_path !== null)
       {
         posterpath = response.data.results[0].poster_path
@@ -181,13 +181,13 @@ if(req.session.uid!= null){
                 res.send("Error With Finding Movie")
                 return
               }
-
-              movie =  {
+                movie =  {
                 movie_id: movieID,
                 movie_title: result[0].movie_title,
                 //sets up the link to the poster from the tmdb database (woo)
                 poster_link: 'https://image.tmdb.org/t/p/w500' + result[0].poster_address
                 }
+            
               res.json([movie]) 
             })    
       })
